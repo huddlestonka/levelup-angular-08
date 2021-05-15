@@ -1,0 +1,39 @@
+[
+  {
+    "id": "008e37dc-02c8-4173-9312-bfa7cf4bb8c3",
+    "title": "Kenya",
+    "description": "Mission Trip",
+    "date": "June 2012",
+    "destinations": [
+      {
+        "id": "923718fd-f84c-4abb-8e72-f8fc6f51253e",
+        "title": "Nairobi",
+        "description": "Stayed with friends",
+        "date": "June 2012",
+        "tripId": "008e37dc-02c8-4173-9312-bfa7cf4bb8c3"
+      },
+      {
+        "id": "95e65c7a-1aad-4c9f-9ed9-e7a4d873838f",
+        "title": "Kisumu",
+        "description": "Played music for kids",
+        "date": "June 2012",
+        "tripId": "008e37dc-02c8-4173-9312-bfa7cf4bb8c3"
+      }
+    ]
+  },
+  {
+    "id": "0157b2ce-d894-4aee-80f9-0752289b658a",
+    "title": "Honeymoon",
+    "description": "Not long enough",
+    "date": "October 2016",
+    "destinations": [
+      {
+        "id": "d9b05a73-8f62-4099-8035-5fc30d5e70b9",
+        "title": "Ocho Rios",
+        "description": "Sunshine and buffets",
+        "date": "October 2016",
+        "tripId": "0157b2ce-d894-4aee-80f9-0752289b658a"
+      }
+    ]
+  }
+]
