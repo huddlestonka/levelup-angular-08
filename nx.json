@@ -40,6 +40,9 @@
     },
     "ui-toolbar": {
       "tags": []
+    },
+    "testing": {
+      "tags": []
     }
   }
 }

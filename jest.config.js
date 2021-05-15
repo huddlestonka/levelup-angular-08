@@ -6,5 +6,6 @@ module.exports = {
     '<rootDir>/libs/material',
     '<rootDir>/libs/api-interfaces',
     '<rootDir>/libs/ui-toolbar',
+    '<rootDir>/libs/testing',
   ],
 };

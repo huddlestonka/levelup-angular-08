@@ -20,7 +20,8 @@
       "@bba/material": ["libs/material/src/index.ts"],
       "@bba/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@bba/ui-toolbar": ["libs/ui-toolbar/src/index.ts"],
-      "@env/*": ["apps/dashboard/src/environments/*"]
+      "@env/*": ["apps/dashboard/src/environments/*"],
+      "@bba/testing": ["libs/testing/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
