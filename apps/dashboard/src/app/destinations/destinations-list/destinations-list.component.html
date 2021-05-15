@@ -1,1 +1,28 @@
-<p>destinations-list works!</p>
+<mat-card>
+  <mat-card-title> Destinations </mat-card-title>
+  <mat-card-content>
+    <mat-list data-cy="destinations-list">
+      <mat-list-item
+        *ngFor="let destination of destinations"
+        attr.data-cy="destination-{{ destination.id }}-item"
+        class="mat-list-option"
+        (click)="selected.emit(destination)"
+        data-cy="list-item"
+      >
+        <span matLine attr.data-cy="destination-{{ destination.id }}-item-title"
+          >{{ destination.title }} - {{ destination.date }}</span
+        >
+        <button
+          *ngIf="!readonly"
+          attr.data-cy="delete-destination-{{ destination.id }}-btn"
+          mat-icon-button
+          type="button"
+          color="warn"
+          (click)="deleted.emit(destination); $event.stopImmediatePropagation()"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

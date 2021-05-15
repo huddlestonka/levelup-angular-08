@@ -1,34 +1,70 @@
 import { Injectable } from '@angular/core';
-
-import { select, Store, Action } from '@ngrx/store';
-
+import { Destination } from '@bba/api-interfaces';
+import { Action, ActionsSubject, select, Store } from '@ngrx/store';
+import { filter } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 import * as DestinationsActions from './destinations.actions';
-import * as DestinationsFeature from './destinations.reducer';
+import * as fromDestinations from './destinations.reducer';
 import * as DestinationsSelectors from './destinations.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class DestinationsFacade {
-  /**
-   * Combine pieces of state using createSelector,
-   * and expose them as observables through the facade.
-   */
   loaded$ = this.store.pipe(
     select(DestinationsSelectors.getDestinationsLoaded)
   );
   allDestinations$ = this.store.pipe(
     select(DestinationsSelectors.getAllDestinations)
   );
-  selectedDestinations$ = this.store.pipe(
-    select(DestinationsSelectors.getSelected)
+  selectedDestination$ = this.store.pipe(
+    select(DestinationsSelectors.getSelectedDestination)
   );
 
-  constructor(private store: Store) {}
+  mutations$ = this.actions$.pipe(
+    filter(
+      (action: Action) =>
+        action.type === DestinationsActions.createDestination({} as any).type ||
+        action.type === DestinationsActions.updateDestination({} as any).type ||
+        action.type === DestinationsActions.deleteDestination({} as any).type
+    )
+  );
 
-  /**
-   * Use the initialization action to perform one
-   * or more tasks in your Effects.
-   */
-  init() {
-    this.store.dispatch(DestinationsActions.init());
+  constructor(
+    private store: Store<fromDestinations.DestinationsPartialState>,
+    private actions$: ActionsSubject
+  ) {}
+
+  selectDestination(selectedId: string) {
+    this.dispatch(DestinationsActions.selectDestination({ selectedId }));
+  }
+
+  loadDestinations() {
+    this.dispatch(DestinationsActions.loadDestinations());
+  }
+
+  loadDestination(destinationId: string) {
+    this.dispatch(DestinationsActions.loadDestination({ destinationId }));
+  }
+
+  createDestination(destination: Destination) {
+    // We are generate the UUID at the client because of a sqlite limitation
+    this.dispatch(
+      DestinationsActions.createDestination({
+        destination: Object.assign({}, destination, { id: uuidv4() }),
+      })
+    );
+  }
+
+  updateDestination(destination: Destination) {
+    this.dispatch(DestinationsActions.updateDestination({ destination }));
+  }
+
+  deleteDestination(destination: Destination) {
+    this.dispatch(DestinationsActions.deleteDestination({ destination }));
+  }
+
+  dispatch(action: Action) {
+    this.store.dispatch(action);
   }
 }

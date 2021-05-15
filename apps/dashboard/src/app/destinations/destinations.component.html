@@ -1,1 +1,19 @@
-<p>destinations works!</p>
+<div class="component-container">
+  <div class="list-component">
+    <bba-destinations-list
+      [destinations]="destinations$ | async"
+      (selected)="selectDestination($event)"
+      (deleted)="deleteDestination($event)"
+    >
+    </bba-destinations-list>
+  </div>
+  <div class="details-component">
+    <bba-destination-details
+      [trips]="trips$ | async"
+      [destination]="selectedDestination$ | async"
+      (saved)="saveDestination($event)"
+      (cancelled)="resetForm()"
+    >
+    </bba-destination-details>
+  </div>
+</div>

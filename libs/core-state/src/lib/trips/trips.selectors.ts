@@ -1,13 +1,9 @@
+import { Trip } from '@bba/api-interfaces';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import {
-  TRIPS_FEATURE_KEY,
-  State,
-  TripsPartialState,
-  tripsAdapter,
-} from './trips.reducer';
+import { TRIPS_FEATURE_KEY, TripsState, tripsAdapter } from './trips.reducer';
 
 // Lookup the 'Trips' feature state managed by NgRx
-export const getTripsState = createFeatureSelector<TripsPartialState, State>(
+export const getTripsState = createFeatureSelector<TripsState>(
   TRIPS_FEATURE_KEY
 );
 
@@ -15,29 +11,39 @@ const { selectAll, selectEntities } = tripsAdapter.getSelectors();
 
 export const getTripsLoaded = createSelector(
   getTripsState,
-  (state: State) => state.loaded
+  (state: TripsState) => state.loaded
 );
 
 export const getTripsError = createSelector(
   getTripsState,
-  (state: State) => state.error
+  (state: TripsState) => state.error
 );
 
-export const getAllTrips = createSelector(getTripsState, (state: State) =>
+export const getAllTrips = createSelector(getTripsState, (state: TripsState) =>
   selectAll(state)
 );
 
-export const getTripsEntities = createSelector(getTripsState, (state: State) =>
-  selectEntities(state)
-);
-
-export const getSelectedId = createSelector(
+export const getTripsEntities = createSelector(
   getTripsState,
-  (state: State) => state.selectedId
+  (state: TripsState) => selectEntities(state)
 );
 
-export const getSelected = createSelector(
+export const getSelectedTripId = createSelector(
+  getTripsState,
+  (state: TripsState) => state.selectedId
+);
+
+export const getSelectedTrip = createSelector(
   getTripsEntities,
-  getSelectedId,
-  (entities, selectedId) => selectedId && entities[selectedId]
+  getSelectedTripId,
+  (entities, selectedId) => {
+    const emptyTrip: Trip = {
+      id: null,
+      title: '',
+      description: '',
+      date: '',
+    };
+
+    return selectedId ? entities[selectedId] : emptyTrip;
+  }
 );

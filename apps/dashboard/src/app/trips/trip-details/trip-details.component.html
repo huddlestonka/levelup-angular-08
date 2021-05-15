@@ -1,1 +1,64 @@
-<p>trip-details works!</p>
+<mat-card>
+  <mat-card-title data-cy="trip-details-title">
+    <span *ngIf="currentTrip.id; else elseBlock">
+      Editing {{ originalTitle }}
+    </span>
+    <ng-template #elseBlock> Select Trip </ng-template>
+  </mat-card-title>
+  <form #form="ngForm" (submit)="saved.emit(currentTrip)" data-cy="trip-form">
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Title"
+          data-cy="trip-form-title"
+          [(ngModel)]="currentTrip.title"
+          type="text"
+          name="title"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Description"
+          data-cy="trip-form-description"
+          [(ngModel)]="currentTrip.description"
+          type="text"
+          name="description"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Date"
+          data-cy="trip-form-date"
+          [(ngModel)]="currentTrip.date"
+          type="text"
+          name="date"
+          required
+        />
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        [disabled]="form.invalid"
+        type="submit"
+        mat-button
+        color="primary"
+        data-cy="trip-form-save"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        mat-button
+        (click)="form.reset(); cancelled.emit()"
+        data-cy="trip-form-cancel"
+      >
+        Cancel
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

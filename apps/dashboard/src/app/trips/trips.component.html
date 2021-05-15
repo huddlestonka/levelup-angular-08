@@ -1,1 +1,18 @@
-<p>trips works!</p>
+<div class="component-container">
+  <div class="list-component">
+    <bba-trips-list
+      [trips]="trips$ | async"
+      (selected)="selectTrip($event)"
+      (deleted)="deleteTrip($event)"
+    >
+    </bba-trips-list>
+  </div>
+  <div class="details-component">
+    <bba-trip-details
+      [trip]="selectedTrip$ | async"
+      (saved)="saveTrip($event)"
+      (cancelled)="resetForm()"
+    >
+    </bba-trip-details>
+  </div>
+</div>

@@ -1,1 +1,21 @@
-<p>home works!</p>
+<div class="home-container" data-cy="home-trip-cards">
+  <mat-card
+    *ngFor="let trip of tripDestinations$ | async"
+    attr.data-cy="home-trip-{{ trip.id }}-card"
+  >
+    <mat-card-header>
+      <mat-card-title attr.data-cy="home-trip-{{ trip.id }}-title">
+        {{ trip.title }} - {{ trip.date }}
+      </mat-card-title>
+      <mat-card-subtitle>{{ trip.description }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <bba-destinations-list
+        attr.data-cy="home-trip-{{ trip.id }}-destinations"
+        [destinations]="trip.destinations"
+        [readonly]="true"
+      >
+      </bba-destinations-list>
+    </mat-card-content>
+  </mat-card>
+</div>

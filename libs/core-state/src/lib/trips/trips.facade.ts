@@ -1,28 +1,62 @@
 import { Injectable } from '@angular/core';
-
-import { select, Store, Action } from '@ngrx/store';
-
+import { Trip } from '@bba/api-interfaces';
+import { Action, ActionsSubject, select, Store } from '@ngrx/store';
+import { filter } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
+import { getTripDestinations } from '..';
 import * as TripsActions from './trips.actions';
-import * as TripsFeature from './trips.reducer';
 import * as TripsSelectors from './trips.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TripsFacade {
-  /**
-   * Combine pieces of state using createSelector,
-   * and expose them as observables through the facade.
-   */
   loaded$ = this.store.pipe(select(TripsSelectors.getTripsLoaded));
   allTrips$ = this.store.pipe(select(TripsSelectors.getAllTrips));
-  selectedTrips$ = this.store.pipe(select(TripsSelectors.getSelected));
+  selectedTrip$ = this.store.pipe(select(TripsSelectors.getSelectedTrip));
+  tripDestinations$ = this.store.pipe(select(getTripDestinations));
 
-  constructor(private store: Store) {}
+  mutations$ = this.actions$.pipe(
+    filter(
+      (action: Action) =>
+        action.type === TripsActions.createTrip({} as any).type ||
+        action.type === TripsActions.updateTrip({} as any).type ||
+        action.type === TripsActions.deleteTrip({} as any).type
+    )
+  );
 
-  /**
-   * Use the initialization action to perform one
-   * or more tasks in your Effects.
-   */
-  init() {
-    this.store.dispatch(TripsActions.init());
+  constructor(private store: Store, private actions$: ActionsSubject) {}
+
+  selectTrip(selectedId: string) {
+    this.dispatch(TripsActions.selectTrip({ selectedId }));
+  }
+
+  loadTrips() {
+    this.dispatch(TripsActions.loadTrips());
+  }
+
+  loadTrip(tripId: string) {
+    this.dispatch(TripsActions.loadTrip({ tripId }));
+  }
+
+  createTrip(trip: Trip) {
+    // We are generate the UUID at the client because of a sqlite limitation
+    this.dispatch(
+      TripsActions.createTrip({
+        trip: Object.assign({}, trip, { id: uuidv4() }),
+      })
+    );
+  }
+
+  updateTrip(trip: Trip) {
+    this.dispatch(TripsActions.updateTrip({ trip }));
+  }
+
+  deleteTrip(trip: Trip) {
+    this.dispatch(TripsActions.deleteTrip({ trip }));
+  }
+
+  dispatch(action: Action) {
+    this.store.dispatch(action);
   }
 }

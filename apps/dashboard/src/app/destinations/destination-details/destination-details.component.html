@@ -1,1 +1,81 @@
-<p>destination-details works!</p>
+<mat-card>
+  <mat-card-title data-cy="destination-details-title">
+    <span *ngIf="currentDestination.id; else elseBlock">
+      Editing {{ originalTitle }}
+    </span>
+    <ng-template #elseBlock> Select Destination </ng-template>
+  </mat-card-title>
+  <form
+    #form="ngForm"
+    (submit)="saved.emit(currentDestination)"
+    data-cy="destination-form"
+  >
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Title"
+          data-cy="destination-form-title"
+          [(ngModel)]="currentDestination.title"
+          type="text"
+          name="title"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Description"
+          data-cy="destination-form-description"
+          [(ngModel)]="currentDestination.description"
+          type="text"
+          name="description"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          placeholder="Date"
+          data-cy="destination-form-date"
+          [(ngModel)]="currentDestination.date"
+          type="text"
+          name="date"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Select a Trip</mat-label>
+        <mat-select
+          [(ngModel)]="currentDestination.tripId"
+          data-cy="destination-form-trip"
+          required="false"
+          name="tripId"
+        >
+          <mat-option *ngFor="let trip of trips" [value]="trip.id">
+            {{ trip.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        [disabled]="form.invalid"
+        type="submit"
+        mat-button
+        color="primary"
+        data-cy="destination-form-save"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        mat-button
+        (click)="form.reset(); cancelled.emit()"
+        data-cy="destination-form-cancel"
+      >
+        Cancel
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
