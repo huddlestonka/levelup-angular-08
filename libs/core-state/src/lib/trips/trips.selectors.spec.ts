@@ -1,15 +1,14 @@
-import { TripsEntity } from './trips.models';
-import { State, tripsAdapter, initialState } from './trips.reducer';
+import { TripsState, tripsAdapter, initialTripsState } from './trips.reducer';
 import * as TripsSelectors from './trips.selectors';
+
+import { Trip } from '@bba/api-interfaces';
+import { mockTrip } from '@bba/testing';
 
 describe('Trips Selectors', () => {
   const ERROR_MSG = 'No Error Available';
   const getTripsId = (it) => it['id'];
-  const createTripsEntity = (id: string, name = '') =>
-    ({
-      id,
-      name: name || `name-${id}`,
-    } as TripsEntity);
+  const createTrip = (id: string, name = '') =>
+    ({ ...mockTrip, id: id } as Trip);
 
   let state;
 
@@ -17,12 +16,12 @@ describe('Trips Selectors', () => {
     state = {
       trips: tripsAdapter.setAll(
         [
-          createTripsEntity('PRODUCT-AAA'),
-          createTripsEntity('PRODUCT-BBB'),
-          createTripsEntity('PRODUCT-CCC'),
+          createTrip('PRODUCT-AAA'),
+          createTrip('PRODUCT-BBB'),
+          createTrip('PRODUCT-CCC'),
         ],
         {
-          ...initialState,
+          ...initialTripsState,
           selectedId: 'PRODUCT-BBB',
           error: ERROR_MSG,
           loaded: true,
@@ -41,7 +40,7 @@ describe('Trips Selectors', () => {
     });
 
     it('getSelected() should return the selected Entity', () => {
-      const result = TripsSelectors.getSelected(state);
+      const result = TripsSelectors.getSelectedTrip(state);
       const selId = getTripsId(result);
 
       expect(selId).toBe('PRODUCT-BBB');

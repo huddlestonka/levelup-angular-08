@@ -122,7 +122,8 @@
           "outputs": ["coverage/apps/dashboard"],
           "options": {
             "jestConfig": "apps/dashboard/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "codeCoverage": true
           }
         }
       }
@@ -164,7 +165,8 @@
           "outputs": ["coverage/libs/core-data"],
           "options": {
             "jestConfig": "libs/core-data/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "codeCoverage": true
           }
         },
         "lint": {
@@ -189,7 +191,8 @@
           "outputs": ["coverage/libs/core-state"],
           "options": {
             "jestConfig": "libs/core-state/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "codeCoverage": true
           }
         },
         "lint": {
@@ -264,7 +267,8 @@
           "outputs": ["coverage/libs/ui-toolbar"],
           "options": {
             "jestConfig": "libs/ui-toolbar/jest.config.js",
-            "passWithNoTests": true
+            "passWithNoTests": true,
+            "codeCoverage": true
           }
         },
         "lint": {

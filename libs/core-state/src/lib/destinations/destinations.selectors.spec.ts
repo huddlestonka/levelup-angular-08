@@ -1,19 +1,18 @@
-import { DestinationsEntity } from './destinations.models';
 import {
-  State,
+  DestinationsState,
   destinationsAdapter,
-  initialState,
+  initialDestinationsState,
 } from './destinations.reducer';
 import * as DestinationsSelectors from './destinations.selectors';
+
+import { Destination } from '@bba/api-interfaces';
+import { mockDestination } from '@bba/testing';
 
 describe('Destinations Selectors', () => {
   const ERROR_MSG = 'No Error Available';
   const getDestinationsId = (it) => it['id'];
-  const createDestinationsEntity = (id: string, name = '') =>
-    ({
-      id,
-      name: name || `name-${id}`,
-    } as DestinationsEntity);
+  const createDestination = (id: string, name = '') =>
+    ({ ...mockDestination, id: id } as Destination);
 
   let state;
 
@@ -21,12 +20,12 @@ describe('Destinations Selectors', () => {
     state = {
       destinations: destinationsAdapter.setAll(
         [
-          createDestinationsEntity('PRODUCT-AAA'),
-          createDestinationsEntity('PRODUCT-BBB'),
-          createDestinationsEntity('PRODUCT-CCC'),
+          createDestination('PRODUCT-AAA'),
+          createDestination('PRODUCT-BBB'),
+          createDestination('PRODUCT-CCC'),
         ],
         {
-          ...initialState,
+          ...initialDestinationsState,
           selectedId: 'PRODUCT-BBB',
           error: ERROR_MSG,
           loaded: true,
@@ -45,7 +44,7 @@ describe('Destinations Selectors', () => {
     });
 
     it('getSelected() should return the selected Entity', () => {
-      const result = DestinationsSelectors.getSelected(state);
+      const result = DestinationsSelectors.getSelectedDestination(state);
       const selId = getDestinationsId(result);
 
       expect(selId).toBe('PRODUCT-BBB');

@@ -1,121 +1,118 @@
-import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { readFirst } from '@nrwl/angular/testing';
+import { ActionsSubject } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule, Store } from '@ngrx/store';
-
-import { NxModule } from '@nrwl/angular';
-
-import { DestinationsEntity } from './destinations.models';
-import { DestinationsEffects } from './destinations.effects';
 import { DestinationsFacade } from './destinations.facade';
-
-import * as DestinationsSelectors from './destinations.selectors';
 import * as DestinationsActions from './destinations.actions';
-import {
-  DESTINATIONS_FEATURE_KEY,
-  State,
-  initialState,
-  reducer,
-} from './destinations.reducer';
+import { initialDestinationsState } from './destinations.reducer';
 
-interface TestSchema {
-  destinations: State;
-}
+import { mockDestination } from '@bba/testing';
 
 describe('DestinationsFacade', () => {
   let facade: DestinationsFacade;
-  let store: Store<TestSchema>;
-  const createDestinationsEntity = (id: string, name = '') =>
-    ({
-      id,
-      name: name || `name-${id}`,
-    } as DestinationsEntity);
+  let actionSubject;
+  const mockActionsSubject = new ActionsSubject();
+  let store: MockStore;
 
-  beforeEach(() => {});
-
-  describe('used in NgModule', () => {
-    beforeEach(() => {
-      @NgModule({
-        imports: [
-          StoreModule.forFeature(DESTINATIONS_FEATURE_KEY, reducer),
-          EffectsModule.forFeature([DestinationsEffects]),
-        ],
-        providers: [DestinationsFacade],
-      })
-      class CustomFeatureModule {}
-
-      @NgModule({
-        imports: [
-          NxModule.forRoot(),
-          StoreModule.forRoot({}),
-          EffectsModule.forRoot([]),
-          CustomFeatureModule,
-        ],
-      })
-      class RootModule {}
-      TestBed.configureTestingModule({ imports: [RootModule] });
-
-      store = TestBed.inject(Store);
-      facade = TestBed.inject(DestinationsFacade);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        DestinationsFacade,
+        provideMockStore({ initialState: initialDestinationsState }),
+        { provide: ActionsSubject, useValue: mockActionsSubject },
+      ],
     });
 
-    /**
-     * The initially generated facade::loadAll() returns empty array
-     */
-    it('loadAll() should return empty list with loaded == true', async (done) => {
-      try {
-        let list = await readFirst(facade.allDestinations$);
-        let isLoaded = await readFirst(facade.loaded$);
+    facade = TestBed.inject(DestinationsFacade);
+    actionSubject = TestBed.inject(ActionsSubject);
+    store = TestBed.inject(MockStore);
+  });
 
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
+  it('should be created', () => {
+    expect(facade).toBeTruthy();
+  });
 
-        facade.init();
+  it('should have mutations', (done) => {
+    const action = DestinationsActions.createDestination({
+      destination: mockDestination,
+    });
+    actionSubject.next(action);
 
-        list = await readFirst(facade.allDestinations$);
-        isLoaded = await readFirst(facade.loaded$);
+    facade.mutations$.subscribe((result) => {
+      expect(result).toBe(action);
+      done();
+    });
+  });
 
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(true);
+  describe('should dispatch', () => {
+    it('select on select(destination.id)', () => {
+      const spy = jest.spyOn(store, 'dispatch');
 
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      facade.selectDestination(mockDestination.id);
+
+      const action = DestinationsActions.selectDestination({
+        selectedId: mockDestination.id,
+      });
+
+      expect(spy).toHaveBeenCalledWith(action);
     });
 
-    /**
-     * Use `loadDestinationsSuccess` to manually update list
-     */
-    it('allDestinations$ should return the loaded list; and loaded flag == true', async (done) => {
-      try {
-        let list = await readFirst(facade.allDestinations$);
-        let isLoaded = await readFirst(facade.loaded$);
+    it('loadDestinations on loadDestinations()', () => {
+      const spy = jest.spyOn(store, 'dispatch');
 
-        expect(list.length).toBe(0);
-        expect(isLoaded).toBe(false);
+      facade.loadDestinations();
 
-        store.dispatch(
-          DestinationsActions.loadDestinationsSuccess({
-            destinations: [
-              createDestinationsEntity('AAA'),
-              createDestinationsEntity('BBB'),
-            ],
-          })
-        );
+      const action = DestinationsActions.loadDestinations();
 
-        list = await readFirst(facade.allDestinations$);
-        isLoaded = await readFirst(facade.loaded$);
+      expect(spy).toHaveBeenCalledWith(action);
+    });
 
-        expect(list.length).toBe(2);
-        expect(isLoaded).toBe(true);
+    it('loadDestination on loadDestination(destination.id)', () => {
+      const spy = jest.spyOn(store, 'dispatch');
 
-        done();
-      } catch (err) {
-        done.fail(err);
-      }
+      facade.loadDestination(mockDestination.id);
+
+      const action = DestinationsActions.loadDestination({
+        destinationId: mockDestination.id,
+      });
+
+      expect(spy).toHaveBeenCalledWith(action);
+    });
+
+    it('createDestination on createDestination(destination)', () => {
+      const spy = jest.spyOn(store, 'dispatch');
+
+      facade.createDestination(mockDestination);
+
+      const action = DestinationsActions.createDestination({
+        destination: mockDestination,
+      });
+
+      expect(spy).toHaveBeenCalledWith(action);
+    });
+
+    it('updateDestination on updateDestination(destination)', () => {
+      const spy = jest.spyOn(store, 'dispatch');
+
+      facade.updateDestination(mockDestination);
+
+      const action = DestinationsActions.updateDestination({
+        destination: mockDestination,
+      });
+
+      expect(spy).toHaveBeenCalledWith(action);
+    });
+
+    it('delete on delete(model)', () => {
+      const spy = jest.spyOn(store, 'dispatch');
+
+      facade.deleteDestination(mockDestination);
+
+      const action = DestinationsActions.deleteDestination({
+        destination: mockDestination,
+      });
+
+      expect(spy).toHaveBeenCalledWith(action);
     });
   });
 });
